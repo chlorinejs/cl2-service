@@ -1,6 +1,6 @@
-# Chlorine Web REPL
+# Chlorine service
 
-Web REPL for Clojure/ChlorineJS
+Chlorine compiling service to use with Plunker (http://plnkr.co/)
 
 Chlorine (formerly Clojurejs) is a naive implementation of a Clojure subset language to Javascript translator.
 
@@ -8,13 +8,6 @@ Chlorine (formerly Clojurejs) is a naive implementation of a Clojure subset lang
 lein deps
 lein run
 ```
-See it online at: http://web-repl.herokuapp.com/
-
-You will see a terminal box, just check this:
-```
-$ (map inc (range 200))
-```
-and see the result. Remember, the script is run in **your** browser. You have been warned :)
 
 For more information see the chlorine [wiki](https://github.com/chlorinejs/chlorine/wiki).
 

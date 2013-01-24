@@ -1,5 +1,5 @@
-(defproject cl2-web-repl "0.2.0-SNAPSHOT"
-  :description "Chlorine REPL on the Web."
+(defproject cl2-service "0.2.0-SNAPSHOT"
+  :description "Chlorine compiling service."
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [lib-noir "0.3.5"]
                  [chlorine "1.7.0-SNAPSHOT"]
@@ -8,4 +8,4 @@
   :ring {:handler web-repl.server/handler
          :auto-reload? false}
   :aot :all
-  :main web-repl.server)
+  :main cl2-service.server)

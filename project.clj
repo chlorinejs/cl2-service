@@ -5,7 +5,7 @@
                  [chlorine "1.7.0-SNAPSHOT"]
                  [core-cl2 "1.0.0-SNAPSHOT"]]
   :plugins [[lein-ring "0.8.2"]]
-  :ring {:handler web-repl.server/handler
+  :ring {:handler cl2-service.server/handler
          :auto-reload? false}
   :aot :all
   :main cl2-service.server)

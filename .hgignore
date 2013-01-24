@@ -8,3 +8,4 @@ pom.xml
 .lein-deps-sum
 .cake
 .lein-failures
+/hs_err_*.log

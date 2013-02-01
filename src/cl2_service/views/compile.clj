@@ -3,7 +3,6 @@
         [noir.response :only [redirect content-type]]
         [pathetic.core :only [url-normalize]]
         [chlorine.js])
-  (:require [noir.cookies :as cookies])
   (:import java.util.Date))
 
 (def angular {:reserved-symbols
@@ -46,7 +45,7 @@ and saves states to this var."}
             *macros*         (ref {})
             *print-pretty*   true]
     (let [core-js (with-profile angular
-                    (js (include! [:private "dev.cl2"])))]
+                    (js (include! [:resource "dev.cl2"])))]
       {:temp-sym-count @*temp-sym-count*
        :macros @*macros*
        :core-js core-js})))

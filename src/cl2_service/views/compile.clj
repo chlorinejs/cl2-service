@@ -2,42 +2,67 @@
   (:use [compojure.core :refer [defroutes GET context]]
         [noir.response :only [redirect content-type]]
         [pathetic.core :only [url-normalize]]
+        [chlorine.util :only [with-timeout]]
+        [clojure.stacktrace :only [print-cause-trace]]
+        [slingshot.slingshot]
         [chlorine.js])
   (:import java.util.Date))
 
 (defn now "Gets current time in miliseconds"
   [] (.getTime (Date.)))
 
-(def ^{:doc "Pre-compiles Chlorine `dev` environment once
-and saves states to this var."}
-  preloaded
-  (binding [*temp-sym-count* (ref 999)
-            *last-sexpr*     (ref nil)
-            *macros*         (ref {})
-            *print-pretty*   true]
-    (let [core-js (js (include! [:resource "dev.cl2"]))]
-      {:temp-sym-count @*temp-sym-count*
-       :macros @*macros*
-       :core-js core-js})))
+(defonce ^{:doc "Pre-compiles Chlorine `dev` environment once
+ and saves states to this var."}
+  prelude
+  (apply merge
+         (-> (fn [strategy]
+               (binding [*temp-sym-count* (ref 999)
+                         *macros*         (ref {})
+                         *print-pretty*   true]
+                 (let [js-content (tojs' (str "r:/" strategy ".cl2"))]
+                   {strategy {:temp-sym-count @*temp-sym-count*
+                              :macros @*macros*
+                              :js js-content}})))
+             (map ["dev" "prod" "bare"]))))
 
 (defn new-session
   "Prepares starting vars for a new session"
-  []
-  {:temp-sym-count (ref (:temp-sym-count preloaded))
-   :macros         (ref (:macros         preloaded))
-   :last-sexpr (ref nil)
-   })
+  [strategy]
+  {:temp-sym-count (ref (get-in prelude [strategy :temp-sym-count]))
+   :macros         (ref (get-in prelude [strategy :macros]))})
 
 (defroutes compiling
-  (GET "/service/:filename" [filename :as request]
+  (GET "/:strategy/prelude.js" [strategy]
+       (get-in prelude [strategy :js]))
+  (GET "/:strategy/:filename" [strategy filename :as request]
        (when-let [referer (get-in  request [:headers "referer"])]
-         (let [session (new-session)]
-           (binding [*temp-sym-count* (:temp-sym-count session)
-                     *last-sexpr*      (:last-sexpr session)
-                     *macros*          (:macros session)
+         (let [session (new-session strategy)
+               angular (get-in  request [:query-params "angular"])]
+           (println (pr-str angular))
+           (binding [*temp-sym-count* (:temp-sym-core-jscount session)
+                     *macros*         (:macros session)
                      *print-pretty*   true]
              (str "console.log('Compiled at: ', " (now) ");\n"
-                  (tojs (url-normalize (str referer filename))))))))
-  (GET "/core-cl2.js" []
-       (:core-js preloaded))
-  )
+                  (when angular (tojs' "r:/angular-cl2/lib/angular.cl2"))
+                  (try+
+                   (with-timeout 5000
+                     (tojs' (url-normalize (str referer filename))))
+                   (catch map? e
+                     (->> (with-out-str
+                            (println "Compilation Error: ")
+                            (println (:msg e))
+                            (doseq [i (range (count (:causes e)))
+                                    :let [cause (nth (:causes e) i)]]
+                              (print (apply str (repeat (inc i) "  ")))
+                              (println "caused by " cause))
+                            (when-let [trace (:trace e)]
+                              (print-cause-trace trace 3)))
+                          (pr-str)
+                          (format "alert('%s')")))
+                   (catch java.util.concurrent.TimeoutException e
+                     (format "alert('%s')" (str
+                                            "Error: Timeout compiling "
+                                            filename)))
+                   (catch Throwable e
+                     (format "alert('%s')"
+                             (print-cause-trace e 3))))))))))

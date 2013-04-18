@@ -1,9 +1,9 @@
-(defproject cl2-service "0.3.0-SNAPSHOT"
+(defproject cl2-service "0.4.0"
   :description "Chlorine compiling service."
-  :dependencies [[org.clojure/clojure "1.5.0"]
+  :dependencies [[org.clojure/clojure "1.5.1"]
                  [lib-noir "0.3.5"]
-                 [chlorine "1.7.0"]
-                 [core-cl2 "1.0.0-SNAPSHOT"]]
+                 [chlorine "1.5.3"]
+                 [core-cl2 "0.7.1"]]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler cl2-service.server/handler
          :auto-reload? false}

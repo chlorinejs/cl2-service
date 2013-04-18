@@ -38,7 +38,6 @@
        (when-let [referer (get-in  request [:headers "referer"])]
          (let [session (new-session strategy)
                angular (get-in  request [:query-params "angular"])]
-           (println (pr-str angular))
            (binding [*temp-sym-count* (:temp-sym-core-jscount session)
                      *macros*         (:macros session)
                      *print-pretty*   true]
@@ -58,11 +57,14 @@
                             (when-let [trace (:trace e)]
                               (print-cause-trace trace 3)))
                           (pr-str)
-                          (format "alert('%s')")))
+                          (format "alert(%s)")))
                    (catch java.util.concurrent.TimeoutException e
-                     (format "alert('%s')" (str
-                                            "Error: Timeout compiling "
-                                            filename)))
+                     (->> (str
+                           "Error: Timeout compiling "
+                           filename)
+                          (pr-str)
+                          (format "alert(%s)" )))
                    (catch Throwable e
-                     (format "alert('%s')"
-                             (print-cause-trace e 3))))))))))
+                     (->> (with-out-str (print-cause-trace e 3))
+                          (pr-str)
+                          (format "alert(%s)"))))))))))

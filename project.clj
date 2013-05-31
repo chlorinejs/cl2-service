@@ -1,9 +1,9 @@
-(defproject cl2-service "0.4.0"
+(defproject cl2-service "0.5.0"
   :description "Chlorine compiling service."
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [lib-noir "0.3.5"]
-                 [chlorine "1.5.3"]
-                 [core-cl2 "0.7.1"]]
+                 [chlorine "1.5.3.1"]
+                 [core-cl2 "0.7.2"]]
   :resource-paths ["node_modules"]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler cl2-service.server/handler

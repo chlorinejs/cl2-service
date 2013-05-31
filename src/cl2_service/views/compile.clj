@@ -11,7 +11,7 @@
 (defn now "Gets current time in miliseconds"
   [] (.getTime (Date.)))
 
-(defonce ^{:doc "Pre-compiles Chlorine `dev` environment once
+(defonce ^{:doc "Pre-compiles Chlorine `dev` strategies once
  and saves states to this var."}
   prelude
   (apply merge
@@ -19,7 +19,7 @@
                (binding [*temp-sym-count* (ref 999)
                          *macros*         (ref {})
                          *print-pretty*   true]
-                 (let [js-content (tojs' (str "r:/" strategy ".cl2"))]
+                 (let [js-content (tojs' (str "r:/strategies/" strategy ".cl2"))]
                    {strategy {:temp-sym-count @*temp-sym-count*
                               :macros @*macros*
                               :js js-content}})))

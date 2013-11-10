@@ -23,7 +23,7 @@
                    {strategy {:temp-sym-count @*temp-sym-count*
                               :macros @*macros*
                               :js js-content}})))
-             (map ["dev" "prod" "bare"]))))
+             (map ["dev" "prod"]))))
 
 (defn new-session
   "Prepares starting vars for a new session"

@@ -16,7 +16,7 @@ lein ring server
 ```
 
 ## Usage
-See the chlorine [wiki](https://github.com/chlorinejs/chlorine/wiki) to learn about ChlorineJS and this service usage.
+See the chlorine [wiki](https://github.com/chlorinejs/chlorine/wiki) to learn about ChlorineJS and [examples](https://github.com/chlorinejs/chlorine/wiki/Showcases) for this service usage.
 
 ## License
 

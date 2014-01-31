@@ -1,4 +1,4 @@
-(ns cl2-service.views.compile
+(ns chlorine.service.compile
   (:refer-clojure :exclude [compile])
   (:require [compojure.core :refer [defroutes GET context]]
             [noir.response :refer [redirect content-type]]

@@ -5,14 +5,13 @@
         [noir.cookies :only [wrap-noir-cookies*]]
         [noir.util.middleware :only [wrap-strip-trailing-slash]]
         [compojure.handler :only [site]]
-        [cl2-service.views.compile :only [compiling]]))
+        [cl2-service.views.compile :only [compile]]))
 
 (def handler
-  (site (-> (routes compiling
+  (site (-> (routes compile
                     (resources "/")
                     (not-found "404 - Not found"))
-            (wrap-noir-cookies*)
-            )))
+            (wrap-noir-cookies*))))
 (defn -main []
   (let [port (Integer/parseInt (get (System/getenv) "PORT" "8080"))]
     (run-jetty handler {:port port})))

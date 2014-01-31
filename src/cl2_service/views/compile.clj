@@ -1,21 +1,4 @@
 (ns cl2-service.views.compile
-
-(defn now "Gets current time in miliseconds"
-  [] (.getTime (Date.)))
-
-(defonce ^{:doc "Pre-compiles Chlorine `dev` strategies once
- and saves states to this var."}
-  prelude
-  (apply merge
-         (-> (fn [strategy]
-               (binding [*temp-sym-count* (ref 999)
-                         *macros*         (ref {})
-                         *print-pretty*   true]
-                 (let [js-content (tojs' (str "r:/strategies/" strategy ".cl2"))]
-                   {strategy {:temp-sym-count @*temp-sym-count*
-                              :macros @*macros*
-                              :js js-content}})))
-             (map ["dev" "prod"]))))
   (:refer-clojure :exclude [compile])
   (:require [compojure.core :refer [defroutes GET context]]
             [noir.response :refer [redirect content-type]]

@@ -18,7 +18,7 @@
 
 (defroutes compile
   (GET "/:strategy/prelude.js" [strategy]
-       (get-in prelude [strategy :js]))
+       (get-in prelude [strategy :inclusion]))
   (GET "/:strategy/:filename" [strategy filename :as request]
        (when-let [referer (get-in  request [:headers "referer"])]
          (let [session (new-session strategy)

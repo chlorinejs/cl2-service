@@ -21,13 +21,11 @@
        (get-in prelude [strategy :inclusion]))
   (GET "/:strategy/:filename" [strategy filename :as request]
        (when-let [referer (get-in  request [:headers "referer"])]
-         (let [session (new-session strategy)
-               angular (get-in  request [:query-params "angular"])]
+         (let [session (new-session strategy)]
            (binding [*temp-sym-count* (:temp-sym-core-jscount session)
                      *macros*         (:macros session)
                      *print-pretty*   true]
              (str "console.log('Compiled at: ', " (now) ");\n"
-                  (when angular (tojs' "r:/angular-cl2/lib/angular.cl2"))
                   (try+
                    (with-timeout 5000
                      (tojs' (url-normalize (str referer filename))))

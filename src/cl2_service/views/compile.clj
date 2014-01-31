@@ -1,12 +1,4 @@
 (ns cl2-service.views.compile
-  (:use [compojure.core :refer [defroutes GET context]]
-        [noir.response :only [redirect content-type]]
-        [pathetic.core :only [url-normalize]]
-        [chlorine.util :only [with-timeout]]
-        [clojure.stacktrace :only [print-cause-trace]]
-        [slingshot.slingshot]
-        [chlorine.js])
-  (:import java.util.Date))
 
 (defn now "Gets current time in miliseconds"
   [] (.getTime (Date.)))
@@ -24,6 +16,16 @@
                               :macros @*macros*
                               :js js-content}})))
              (map ["dev" "prod"]))))
+  (:refer-clojure :exclude [compile])
+  (:require [compojure.core :refer [defroutes GET context]]
+            [noir.response :refer [redirect content-type]]
+            [pathetic.core :refer [url-normalize]]
+            [chlorine.util :refer [with-timeout]]
+            [slingshot.slingshot :refer :all]
+            [chlorine.prelude
+             :refer [prelude now exception->msg
+                     exception+->msg msg->alert]]
+            [chlorine.js :refer :all]))
 
 (defn new-session
   "Prepares starting vars for a new session"

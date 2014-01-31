@@ -30,24 +30,11 @@
                    (with-timeout 5000
                      (tojs' (url-normalize (str referer filename))))
                    (catch map? e
-                     (->> (with-out-str
-                            (println "Compilation Error: ")
-                            (println (:msg e))
-                            (doseq [i (range (count (:causes e)))
-                                    :let [cause (nth (:causes e) i)]]
-                              (print (apply str (repeat (inc i) "  ")))
-                              (println "caused by " cause))
-                            (when-let [trace (:trace e)]
-                              (print-cause-trace trace 3)))
-                          (pr-str)
-                          (format "alert(%s)")))
+                     (-> e exception+->msg msg->alert))
                    (catch java.util.concurrent.TimeoutException e
-                     (->> (str
-                           "Error: Timeout compiling "
-                           filename)
-                          (pr-str)
-                          (format "alert(%s)" )))
+                     (-> (str
+                          "Error: Timeout compiling "
+                          filename)
+                         msg->alert))
                    (catch Throwable e
-                     (->> (with-out-str (print-cause-trace e 3))
-                          (pr-str)
-                          (format "alert(%s)"))))))))))
+                     (-> e exception->msg msg->alert)))))))))

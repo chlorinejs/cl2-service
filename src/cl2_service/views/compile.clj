@@ -16,7 +16,7 @@
   {:temp-sym-count (ref (get-in prelude [strategy :temp-sym-count]))
    :macros         (ref (get-in prelude [strategy :macros]))})
 
-(defroutes compiling
+(defroutes compile
   (GET "/:strategy/prelude.js" [strategy]
        (get-in prelude [strategy :js]))
   (GET "/:strategy/:filename" [strategy filename :as request]
